@@ -1,0 +1,71 @@
+package in.ashna.moneymantra.service;
+
+import in.ashna.moneymantra.dto.CategoryDTO;
+import in.ashna.moneymantra.dto.ExpenseDTO;
+import in.ashna.moneymantra.entity.CategoryEntity;
+import in.ashna.moneymantra.entity.ExpenseEntity;
+import in.ashna.moneymantra.entity.ProfileEntity;
+import in.ashna.moneymantra.repository.CategoryRepository;
+import in.ashna.moneymantra.repository.ExpenseRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class ExpenseService {
+
+    private final CategoryRepository categoryRepository;
+    private final ExpenseRepository expenseRepository;
+    private final ProfileService profileService;
+
+    //Adds a new expense to the database
+    public ExpenseDTO addExpense(ExpenseDTO expenseDTO) {
+        ProfileEntity profile = profileService.getCurrentProfile();
+        CategoryEntity category   = categoryRepository.findById(expenseDTO.getCategoryId())
+            .orElseThrow(() -> new RuntimeException("Category not found"));
+        ExpenseEntity newExpense = toEntity(expenseDTO, profile, category);
+        newExpense = expenseRepository.save(newExpense);
+        return toDTO(newExpense);
+    }
+
+    //Retrieves all expenses for the current month/based on the start and end date
+    public List<ExpenseDTO> getCurrentMonthExpensesForCurrentUser() {
+        ProfileEntity profile = profileService.getCurrentProfile();
+        LocalDate currentDate = LocalDate.now();
+        LocalDate startDate=  currentDate.withDayOfMonth(1);
+        LocalDate endDate= currentDate.withDayOfMonth(currentDate.getDayOfMonth());
+        List<ExpenseEntity> list = expenseRepository.findByProfileIdAndDateBetween(profile.getId(), startDate, endDate);
+        return list.stream().map(this::toDTO).toList();
+    }
+
+    //Helper methods
+    private ExpenseEntity toEntity(ExpenseDTO expenseDTO, ProfileEntity profile, CategoryEntity category) {
+        return in.ashna.moneymantra.entity.ExpenseEntity.builder()
+                .name(expenseDTO.getName())
+                .icon(expenseDTO.getIcon())
+                .amount(expenseDTO.getAmount())
+                .date(expenseDTO.getDate())
+                .category(category)
+                .profile(profile)
+                .build();
+
+        //createdAt, updatedAt, id will be generated in the table automatically
+    }
+
+    private ExpenseDTO toDTO(ExpenseEntity expenseEntity) {
+        return ExpenseDTO.builder()
+                .id(expenseEntity.getId())
+                .name(expenseEntity.getName())
+                .icon(expenseEntity.getIcon())
+                .categoryId(expenseEntity.getCategory() != null ? expenseEntity.getCategory().getId() : null)
+                .categoryName(expenseEntity.getCategory() != null ? expenseEntity.getCategory().getName() : "N/A")
+                .amount(expenseEntity.getAmount())
+                .date(expenseEntity.getDate())
+                .createdAt(expenseEntity.getCreatedAt())
+                .updatedAt(expenseEntity.getUpdatedAt())
+                .build();
+    }
+}
