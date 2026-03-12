@@ -1,9 +1,7 @@
 package in.ashna.moneymantra.service;
 
-import in.ashna.moneymantra.dto.ExpenseDTO;
 import in.ashna.moneymantra.dto.IncomeDTO;
 import in.ashna.moneymantra.entity.CategoryEntity;
-import in.ashna.moneymantra.entity.ExpenseEntity;
 import in.ashna.moneymantra.entity.IncomeEntity;
 import in.ashna.moneymantra.entity.ProfileEntity;
 import in.ashna.moneymantra.repository.CategoryRepository;
@@ -40,6 +38,17 @@ public class IncomeService {
         LocalDate endDate= currentDate.withDayOfMonth(currentDate.getDayOfMonth());
         List<IncomeEntity> list = incomeRepository.findByProfileIdAndDateBetween(profile.getId(), startDate, endDate);
         return list.stream().map(this::toDTO).toList();
+    }
+
+    //delete expense by id for current user
+    public void deleteIncome(Long incomeId) {
+        ProfileEntity profile = profileService.getCurrentProfile();
+        IncomeEntity entity = incomeRepository.findById(incomeId)
+                .orElseThrow(() -> new RuntimeException("Income not found"));
+        if (!entity.getProfile().getId().equals(profile.getId())) {
+            throw new RuntimeException("Unauthorized to delete this income");
+        }
+        incomeRepository.delete(entity);
     }
 
     //Helper methods
