@@ -1,6 +1,5 @@
 package in.ashna.moneymantra.service;
 
-import in.ashna.moneymantra.dto.CategoryDTO;
 import in.ashna.moneymantra.dto.ExpenseDTO;
 import in.ashna.moneymantra.entity.CategoryEntity;
 import in.ashna.moneymantra.entity.ExpenseEntity;
@@ -10,6 +9,7 @@ import in.ashna.moneymantra.repository.ExpenseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -52,6 +52,19 @@ public class ExpenseService {
         expenseRepository.delete(entity);
     }
 
+    //Get latest 5 expenses for current user
+    public List<ExpenseDTO> getLatest5ExpensesForCurrentUser() {
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<ExpenseEntity> list = expenseRepository.findTop5ByProfileIdOrderByDateDesc(profile.getId());
+        return  list.stream().map(this::toDTO).toList();
+    }
+
+    //Get total expenses for current user
+    public BigDecimal getTotalExpensesForCurrentUser() {
+        ProfileEntity profile = profileService.getCurrentProfile();
+        BigDecimal total = expenseRepository.findTotalExpenseByProfile(profile.getId());
+        return total != null ? total : BigDecimal.ZERO;
+    }
 
     //Helper methods
     private ExpenseEntity toEntity(ExpenseDTO expenseDTO, ProfileEntity profile, CategoryEntity category) {
