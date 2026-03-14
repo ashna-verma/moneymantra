@@ -1,6 +1,5 @@
 package in.ashna.moneymantra.repository;
 
-import in.ashna.moneymantra.entity.ExpenseEntity;
 import in.ashna.moneymantra.entity.IncomeEntity;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,7 +22,7 @@ public interface IncomeRepository extends JpaRepository<IncomeEntity, Long> {
 
     //not finder method, custom JPQL query
     @Query("SELECT SUM(e.amount) FROM IncomeEntity e WHERE e.profile.id = :profileId")
-    BigDecimal findTotalExpenseByProfile(@Param("profileId") Long profileId);
+    BigDecimal findTotalIncomeByProfile(@Param("profileId") Long profileId);
 
     //select * from tbl_incomes where profile_id = ?1 and date between ?2 and ?3 and name like %?4%
     List<IncomeEntity> findByProfileIdAndDateBetweenAndNameContainingIgnoreCase(
