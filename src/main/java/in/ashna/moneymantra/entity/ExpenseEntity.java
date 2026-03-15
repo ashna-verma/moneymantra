@@ -11,7 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,7 +34,7 @@ public class ExpenseEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)  //every expense is created by 1 user
+    @ManyToOne                          //every expense is created by 1 user
     @JoinColumn(name = "category_id", nullable = false)
     private CategoryEntity category;
 
