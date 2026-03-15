@@ -74,6 +74,12 @@ public class ExpenseService {
         return list.stream().map(this::toDTO).toList();
     }
 
+    //Notifications
+    public List<ExpenseDTO> getExpensesForUserOnDate(Long profileId, LocalDate date) {
+        List<ExpenseEntity> list = expenseRepository.findByProfileIdAndDate(profileId, date);
+        return list.stream().map(this::toDTO).toList();
+    }
+
     //Helper methods
     private ExpenseEntity toEntity(ExpenseDTO expenseDTO, ProfileEntity profile, CategoryEntity category) {
         return in.ashna.moneymantra.entity.ExpenseEntity.builder()
