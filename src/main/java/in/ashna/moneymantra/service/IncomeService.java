@@ -6,6 +6,7 @@ import in.ashna.moneymantra.entity.IncomeEntity;
 import in.ashna.moneymantra.entity.ProfileEntity;
 import in.ashna.moneymantra.repository.CategoryRepository;
 import in.ashna.moneymantra.repository.IncomeRepository;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,12 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +28,7 @@ public class IncomeService {
     private final CategoryRepository categoryRepository;
     private final IncomeRepository incomeRepository;
     private final ProfileService profileService;
+    private final EmailService emailService;
 
     //Adds a new expense to the database
     public IncomeDTO addIncome(IncomeDTO incomeDTO) {
@@ -72,6 +80,87 @@ public class IncomeService {
         ProfileEntity profile = profileService.getCurrentProfile();
         List<IncomeEntity> list = incomeRepository.findByProfileIdAndDateBetweenAndNameContainingIgnoreCase(profile.getId(), startDate, endDate, keyword, sort);
         return list.stream().map(this::toDTO).toList();
+    }
+
+    //Download Incomes excel sheet
+    public byte[] generateIncomeExcel() {
+        ProfileEntity profile = profileService.getCurrentProfile();
+
+        List<IncomeEntity> incomes =
+                incomeRepository.findByProfileIdAndDateBetween(
+                        profile.getId(),
+                        LocalDate.now().withDayOfMonth(1),
+                        LocalDate.now()
+                );
+
+        try (XSSFWorkbook workbook = new XSSFWorkbook();
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
+            Sheet sheet = workbook.createSheet("Income Details");
+
+            // Header row
+            Row headerRow = sheet.createRow(0);
+
+            headerRow.createCell(0).setCellValue("Name");
+            headerRow.createCell(1).setCellValue("Category");
+            headerRow.createCell(2).setCellValue("Amount");
+            headerRow.createCell(3).setCellValue("Date");
+
+            // Data rows
+            int rowIndex = 1;
+
+            for (IncomeEntity income : incomes) {
+                Row row = sheet.createRow(rowIndex++);
+
+                row.createCell(0).setCellValue(income.getName());
+
+                row.createCell(1).setCellValue(
+                        income.getCategory() != null
+                                ? income.getCategory().getName()
+                                : "N/A"
+                );
+
+                row.createCell(2).setCellValue(
+                        income.getAmount().doubleValue()
+                );
+
+                row.createCell(3).setCellValue(
+                        income.getDate().toString()
+                );
+            }
+
+            // Adjust column widths
+            for (int i = 0; i < 4; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            workbook.write(outputStream);
+
+            return outputStream.toByteArray();
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to generate income Excel file", e);
+        }
+    }
+
+    //Email Income details
+    public void emailIncomeDetails() {
+
+        ProfileEntity profile = profileService.getCurrentProfile();
+
+        byte[] excelFile = generateIncomeExcel();
+
+        try {
+            emailService.sendIncomeExcel(
+                    profile.getEmail(),
+                    excelFile
+            );
+        } catch (MessagingException e) {
+            throw new RuntimeException(
+                    "Failed to send income email",
+                    e
+            );
+        }
     }
 
     //Helper methods
