@@ -9,10 +9,17 @@ import in.ashna.moneymantra.repository.ExpenseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import jakarta.mail.MessagingException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +28,7 @@ public class ExpenseService {
     private final CategoryRepository categoryRepository;
     private final ExpenseRepository expenseRepository;
     private final ProfileService profileService;
+    private final EmailService emailService;
 
     //Adds a new expense to the database
     public ExpenseDTO addExpense(ExpenseDTO expenseDTO) {
@@ -78,6 +86,87 @@ public class ExpenseService {
     public List<ExpenseDTO> getExpensesForUserOnDate(Long profileId, LocalDate date) {
         List<ExpenseEntity> list = expenseRepository.findByProfileIdAndDate(profileId, date);
         return list.stream().map(this::toDTO).toList();
+    }
+
+    //Download Expense excel sheet
+    public byte[] generateExpenseExcel() {
+        ProfileEntity profile = profileService.getCurrentProfile();
+
+        List<ExpenseEntity> expenses =
+                expenseRepository.findByProfileIdAndDateBetween(
+                        profile.getId(),
+                        LocalDate.now().withDayOfMonth(1),
+                        LocalDate.now()
+                );
+
+        try (XSSFWorkbook workbook = new XSSFWorkbook();
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
+            Sheet sheet = workbook.createSheet("Expense Details");
+
+            // Header row
+            Row headerRow = sheet.createRow(0);
+
+            headerRow.createCell(0).setCellValue("Name");
+            headerRow.createCell(1).setCellValue("Category");
+            headerRow.createCell(2).setCellValue("Amount");
+            headerRow.createCell(3).setCellValue("Date");
+
+            // Data rows
+            int rowIndex = 1;
+
+            for (ExpenseEntity expense : expenses) {
+                Row row = sheet.createRow(rowIndex++);
+
+                row.createCell(0).setCellValue(expense.getName());
+
+                row.createCell(1).setCellValue(
+                        expense.getCategory() != null
+                                ? expense.getCategory().getName()
+                                : "N/A"
+                );
+
+                row.createCell(2).setCellValue(
+                        expense.getAmount().doubleValue()
+                );
+
+                row.createCell(3).setCellValue(
+                        expense.getDate().toString()
+                );
+            }
+
+            // Adjust column widths
+            for (int i = 0; i < 4; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            workbook.write(outputStream);
+
+            return outputStream.toByteArray();
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to generate expense Excel file", e);
+        }
+    }
+
+    //Email Expense details
+    public void emailExpenseDetails() {
+
+        ProfileEntity profile = profileService.getCurrentProfile();
+
+        byte[] excelFile = generateExpenseExcel();
+
+        try {
+            emailService.sendExpenseExcel(
+                    profile.getEmail(),
+                    excelFile
+            );
+        } catch (MessagingException e) {
+            throw new RuntimeException(
+                    "Failed to send expense email",
+                    e
+            );
+        }
     }
 
     //Helper methods

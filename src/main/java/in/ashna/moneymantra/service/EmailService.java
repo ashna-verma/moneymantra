@@ -59,4 +59,30 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    public void sendExpenseExcel(
+            String recipient,
+            byte[] excelFile
+    ) throws MessagingException {
+
+        MimeMessage message = mailSender.createMimeMessage();
+
+        MimeMessageHelper helper =
+                new MimeMessageHelper(message, true);
+
+        helper.setFrom(fromEmail);
+        helper.setTo(recipient);
+        helper.setSubject("Your Expense Details");
+        helper.setText(
+                "Hi,\n\nPlease find your expense details attached.\n\n" +
+                        "Regards,\nMoneyMantra"
+        );
+
+        helper.addAttachment(
+                "Expense_details.xlsx",
+                new ByteArrayResource(excelFile)
+        );
+
+        mailSender.send(message);
+    }
+
 }
