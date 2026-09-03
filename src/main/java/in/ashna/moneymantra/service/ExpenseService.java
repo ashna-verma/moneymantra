@@ -9,7 +9,6 @@ import in.ashna.moneymantra.repository.ExpenseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import jakarta.mail.MessagingException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -155,18 +154,10 @@ public class ExpenseService {
         ProfileEntity profile = profileService.getCurrentProfile();
 
         byte[] excelFile = generateExpenseExcel();
-
-        try {
-            emailService.sendExpenseExcel(
-                    profile.getEmail(),
-                    excelFile
-            );
-        } catch (MessagingException e) {
-            throw new RuntimeException(
-                    "Failed to send expense email",
-                    e
-            );
-        }
+        emailService.sendExpenseExcel(
+                profile.getEmail(),
+                excelFile
+        );
     }
 
     //Helper methods

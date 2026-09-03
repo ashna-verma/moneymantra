@@ -6,7 +6,6 @@ import in.ashna.moneymantra.entity.IncomeEntity;
 import in.ashna.moneymantra.entity.ProfileEntity;
 import in.ashna.moneymantra.repository.CategoryRepository;
 import in.ashna.moneymantra.repository.IncomeRepository;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -149,18 +148,10 @@ public class IncomeService {
         ProfileEntity profile = profileService.getCurrentProfile();
 
         byte[] excelFile = generateIncomeExcel();
-
-        try {
-            emailService.sendIncomeExcel(
-                    profile.getEmail(),
-                    excelFile
-            );
-        } catch (MessagingException e) {
-            throw new RuntimeException(
-                    "Failed to send income email",
-                    e
-            );
-        }
+        emailService.sendIncomeExcel(
+                profile.getEmail(),
+                excelFile
+        );
     }
 
     //Helper methods
