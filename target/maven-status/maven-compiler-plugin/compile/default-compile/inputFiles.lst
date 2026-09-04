@@ -1,4 +1,5 @@
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\config\SecurityConfig.java
+C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\controller\AiController.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\controller\CategoryController.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\controller\DashboardController.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\controller\ExpenseController.java
@@ -6,10 +7,12 @@ C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantr
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\controller\HomeController.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\controller\IncomeController.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\controller\ProfileController.java
+C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\dto\AiInsightDTO.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\dto\AuthDTO.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\dto\CategoryDTO.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\dto\ExpenseDTO.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\dto\FilterDTO.java
+C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\dto\FinancialSummaryDTO.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\dto\IncomeDTO.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\dto\ProfileDTO.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\dto\RecentTransactionDTO.java
@@ -23,11 +26,13 @@ C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantr
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\repository\IncomeRepository.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\repository\ProfileRepository.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\security\JwtRequestFilter.java
+C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\service\AiService.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\service\AppUserDetailsService.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\service\CategoryService.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\service\DashboardService.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\service\EmailService.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\service\ExpenseService.java
+C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\service\FinancialAnalyticsService.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\service\IncomeService.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\service\NotificationService.java
 C:\Users\ashna\Desktop\MONEYMANTRA\moneymantra\src\main\java\in\ashna\moneymantra\service\ProfileService.java
