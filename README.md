@@ -10,6 +10,8 @@ The application also integrates **AI-powered financial insights** using **Spring
 
 🔗 **GitHub Repository:** https://github.com/ashna-verma/moneymantra
 
+🔗 **GitHub FrontEnd Repository:** https://github.com/ashna-verma/MoneyMantraWebApp.git
+
 ---
 
 ## ✨ Features
