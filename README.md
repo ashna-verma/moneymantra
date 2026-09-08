@@ -215,12 +215,6 @@ cd moneymantra
 
 # ⚙️ Backend Setup
 
-Navigate to the backend directory:
-
-```bash
-cd backend
-```
-
 ### Configure Environment Variables
 
 Do **not** commit secrets to GitHub.
@@ -233,6 +227,8 @@ SPRING_DATASOURCE_USERNAME=
 SPRING_DATASOURCE_PASSWORD=
 
 JWT_SECRET=
+
+DB_PASSWORD=
 
 GEMINI_API_KEY=
 
@@ -292,20 +288,21 @@ http://localhost:8080/api/v1.0
 💻 Frontend Setup
 
 Clone the frontend repository:
-
+```text
 git clone https://github.com/ashna-verma/MoneyMantraWebApp.git
-
+```
 Install dependencies:
-
+```text
 npm install
-
+```
 Start the development server:
-
+```text
 npm run dev
-
+```
 The frontend will typically run on:
-
+```text
 http://localhost:5173
+```
 ---
 
 # 🔗 Key API Endpoints
@@ -395,41 +392,6 @@ Sensitive values such as database credentials and API keys are configured using 
 
 ---
 
-# 🔒 Security
-
-The following files and secrets should never be committed:
-
-```text
-.env
-application-local.properties
-API keys
-JWT secrets
-Database passwords
-Cloudinary credentials
-Email service credentials
-```
-
-Example `.gitignore`:
-
-```gitignore
-# Build files
-target/
-
-# Environment files
-.env
-.env.*
-
-# Application secrets
-application-local.properties
-
-# Node modules
-node_modules/
-
-# Build output
-dist/
-```
-
----
 
 # 🎯 Key Technical Highlights
 
